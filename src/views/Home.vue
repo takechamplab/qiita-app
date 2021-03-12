@@ -1,18 +1,42 @@
 <template>
   <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png" />
-    <HelloWorld msg="Welcome to Your Vue.js App" />
+    <p>{{ "ストアには " + storeToken + " がセットされています" }}</p>
+    <input class="input" type="text" v-model="token" />
+    <button @click="setToken">トークンをセットする</button>
   </div>
 </template>
 
 <script>
-// @ is an alias to /src
-import HelloWorld from "@/components/HelloWorld.vue";
-
 export default {
   name: "Home",
-  components: {
-    HelloWorld
+  data() {
+    return {
+      token: ""
+    };
+  },
+  computed: {
+    storeToken() {
+      return this.$store.state.token;
+    },
+    items() {
+      return this.$store.state.items;
+    }
+  },
+  methods: {
+    setToken() {
+      this.$store.commit("setToken", this.token);
+    }
   }
 };
 </script>
+
+<style scoped>
+.home {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.input {
+  margin-bottom: 10px;
+}
+</style>

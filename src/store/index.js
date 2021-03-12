@@ -11,7 +11,8 @@ Vue.use(Vuex);
 export default new Vuex.Store({
   state: {
     token: "",
-    items: []
+    items: [],
+    item: null
   },
   mutations: {
     setToken(state, token) {
@@ -25,22 +26,34 @@ export default new Vuex.Store({
     }
   },
   actions: {
-    async postItems(_, params) {
-      await axios.post("/items", params);
+    async postItem({ state }, params) {
+      if (!state.token) return;
+
+      await axios.post("/items", params, {
+        headers: { Authorization: `Bearer ${state.token}` }
+      });
     },
-    async getItems({ commit }) {
-      const response = await axios.get("/authenticated_user/items");
+    async getItems({ state, commit }) {
+      if (!state.token) return;
+
+      const response = await axios.get("/authenticated_user/items", {
+        headers: { Authorization: `Bearer ${state.token}` }
+      });
       commit("setItems", response.data);
     },
-    async getItem({ commit }, itemId) {
-      const response = await axios.get(`/items/${itemId}`);
-      commit("setItem", response.data);
+    async patchItem({ state }, { itemId, params }) {
+      if (!state.token) return;
+
+      await axios.patch(`/items/${itemId}`, params, {
+        headers: { Authorization: `Bearer ${state.token}` }
+      });
     },
-    async patchItem(_, { itemId, params }) {
-      await axios.patch(`/authenticated_user/items/${itemId}`, params);
-    },
-    async deleteItem(_, itemId) {
-      await axios.delete(`/authenticated_user/items/${itemId}`);
+    async deleteItem({ state }, itemId) {
+      if (!state.token) return;
+
+      await axios.delete(`/items/${itemId}`, {
+        headers: { Authorization: `Bearer ${state.token}` }
+      });
     }
   },
   modules: {}
