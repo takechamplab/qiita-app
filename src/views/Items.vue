@@ -17,7 +17,7 @@ export default {
       return this.$store.state.items;
     }
   },
-  created() {
+  mounted() {
     this.$store.dispatch("getItems");
   }
 };

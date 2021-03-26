@@ -1,7 +1,11 @@
 <template>
   <div class="home">
-    <p>{{ "ストアには " + storeToken + " がセットされています" }}</p>
-    <input class="input" type="text" v-model="token" />
+    <input
+      class="input"
+      type="text"
+      placeholder="トークンを入力"
+      v-model="token"
+    />
     <button @click="setToken">トークンをセットする</button>
   </div>
 </template>

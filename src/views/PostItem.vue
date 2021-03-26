@@ -14,20 +14,22 @@
       v-model="body"
     ></textarea>
     <div class="tags">
-      <input
-        class="tag"
-        v-for="(tag, i) in tags"
-        :key="i + tag"
-        type="text"
-        placeholder="タグを入力"
-        v-model="tag.name"
-      />
+      <div class="tag" v-for="(tag, i) in tags" :key="i + tag">
+        <input
+          class="input-tag"
+          type="text"
+          placeholder="タグを入力"
+          v-model="tag.name"
+        />
+        <button class="button" @click="deleteTag(i)">タグ削除</button>
+      </div>
       <button class="button" @click="addTag">タグ追加</button>
     </div>
     <div class="private">
       <input type="checkbox" id="isPrivate" v-model="isPrivate" />
       <label for="isPrivate">限定共有</label>
     </div>
+    <p class="error-message" v-if="errorMessage">{{ errorMessage }}</p>
     <button class="button" @click="save">保存</button>
   </div>
 </template>
@@ -40,7 +42,8 @@ export default {
       title: "",
       body: "",
       isPrivate: true,
-      tags: []
+      tags: [],
+      errorMessage: ""
     };
   },
   methods: {
@@ -49,7 +52,16 @@ export default {
         name: ""
       });
     },
+    deleteTag(index) {
+      this.tags = this.tags.filter((tag, i) => i !== index);
+    },
     save() {
+      for (const tag of this.tags) {
+        if (!tag.name.trim()) {
+          this.errorMessage = "空のタグがあります";
+          return;
+        }
+      }
       const payload = {
         title: this.title,
         body: this.body,
@@ -82,11 +94,21 @@ export default {
   flex-direction: column;
   align-items: center;
 }
+.tags {
+  display: flex;
+  align-items: center;
+}
 .tag {
   margin-bottom: 10px;
 }
+.input-tag {
+  margin-right: 4px;
+}
 .private {
   margin-bottom: 10px;
+}
+.error-message {
+  color: red;
 }
 .button {
   margin-bottom: 10px;
